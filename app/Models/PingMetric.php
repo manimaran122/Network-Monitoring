@@ -1,0 +1,24 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class PingMetric extends Model
+{
+    use HasFactory;
+
+    protected $guarded = [];
+
+    public $timestamps = false;
+
+    protected $casts = [
+        'created_at' => 'datetime',
+    ];
+
+    public function monitor()
+    {
+        return $this->belongsTo(Monitor::class);
+    }
+}
