@@ -1,0 +1,133 @@
+<div>
+    {{-- Alert Banner: First Login --}}
+    @if($forceReason === 'first_login')
+    <div class="mb-5 flex items-start gap-3 bg-blue-900/40 border border-blue-500/40 rounded-xl p-4">
+        <i class="ph-fill ph-info text-blue-400 text-xl mt-0.5 shrink-0"></i>
+        <div>
+            <p class="text-blue-300 font-semibold text-sm">First Login — Password Change Required</p>
+            <p class="text-blue-400 text-xs mt-0.5">Your account was created by an administrator. You must set a new personal password before continuing.</p>
+        </div>
+    </div>
+    @elseif($forceReason === 'expired')
+    <div class="mb-5 flex items-start gap-3 bg-red-900/40 border border-red-500/40 rounded-xl p-4">
+        <i class="ph-fill ph-warning text-red-400 text-xl mt-0.5 shrink-0"></i>
+        <div>
+            <p class="text-red-300 font-semibold text-sm">Password Expired</p>
+            <p class="text-red-400 text-xs mt-0.5">Your password has expired (45-day policy). Please create a new password to regain access.</p>
+        </div>
+    </div>
+    @endif
+
+    {{-- Card --}}
+    <div class="bg-slate-900/80 backdrop-blur-md border border-slate-700 rounded-2xl shadow-2xl overflow-hidden">
+
+        {{-- Header --}}
+        <div class="p-6 border-b border-slate-700 flex items-center gap-3">
+            <div class="flex items-center justify-center w-10 h-10 rounded-full bg-emerald-600/20 border border-emerald-500/30">
+                <i class="ph-fill ph-key text-emerald-400 text-xl"></i>
+            </div>
+            <div>
+                <h2 class="text-lg font-bold text-white">Change Password</h2>
+                <p class="text-xs text-slate-400">Keep your account secure with a strong password</p>
+            </div>
+        </div>
+
+        {{-- Form --}}
+        <form wire:submit="save" class="p-6 space-y-5">
+
+            {{-- Current Password --}}
+            <div>
+                <label for="current_password" class="block text-sm font-medium text-slate-300 mb-1.5">
+                    Current Password
+                </label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="ph-bold ph-lock text-slate-500"></i>
+                    </div>
+                    <input
+                        wire:model="current_password"
+                        type="password"
+                        id="current_password"
+                        autocomplete="current-password"
+                        class="block w-full pl-10 pr-4 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all text-sm"
+                        placeholder="Enter your current password"
+                    >
+                </div>
+                @error('current_password')
+                    <p class="text-red-400 text-xs mt-1.5 flex items-center gap-1">
+                        <i class="ph-bold ph-x-circle"></i> {{ $message }}
+                    </p>
+                @enderror
+            </div>
+
+            <div class="border-t border-slate-700/60"></div>
+
+            {{-- New Password --}}
+            <div>
+                <label for="password" class="block text-sm font-medium text-slate-300 mb-1.5">
+                    New Password
+                </label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="ph-bold ph-lock-key text-slate-500"></i>
+                    </div>
+                    <input
+                        wire:model="password"
+                        type="password"
+                        id="password"
+                        autocomplete="new-password"
+                        class="block w-full pl-10 pr-4 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all text-sm"
+                        placeholder="Minimum 8 characters"
+                    >
+                </div>
+                @error('password')
+                    <p class="text-red-400 text-xs mt-1.5 flex items-center gap-1">
+                        <i class="ph-bold ph-x-circle"></i> {{ $message }}
+                    </p>
+                @enderror
+                <p class="text-slate-500 text-xs mt-1.5">Must be at least 8 characters with uppercase, lowercase &amp; numbers.</p>
+            </div>
+
+            {{-- Confirm Password --}}
+            <div>
+                <label for="password_confirmation" class="block text-sm font-medium text-slate-300 mb-1.5">
+                    Confirm New Password
+                </label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="ph-bold ph-lock-key text-slate-500"></i>
+                    </div>
+                    <input
+                        wire:model="password_confirmation"
+                        type="password"
+                        id="password_confirmation"
+                        autocomplete="new-password"
+                        class="block w-full pl-10 pr-4 py-2.5 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all text-sm"
+                        placeholder="Re-enter your new password"
+                    >
+                </div>
+                @error('password_confirmation')
+                    <p class="text-red-400 text-xs mt-1.5 flex items-center gap-1">
+                        <i class="ph-bold ph-x-circle"></i> {{ $message }}
+                    </p>
+                @enderror
+            </div>
+
+            {{-- Submit --}}
+            <div class="pt-2">
+                <button
+                    type="submit"
+                    class="w-full flex justify-center items-center gap-2 py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-emerald-500 transition-all uppercase tracking-wide"
+                >
+                    <span wire:loading.remove wire:target="save" class="flex items-center gap-2">
+                        <i class="ph-bold ph-check-circle"></i> Update Password
+                    </span>
+                    <span wire:loading wire:target="save" class="flex items-center gap-2">
+                        <i class="ph-bold ph-spinner animate-spin"></i> Saving...
+                    </span>
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
