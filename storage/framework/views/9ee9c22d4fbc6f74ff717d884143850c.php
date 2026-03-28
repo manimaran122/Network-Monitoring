@@ -13,23 +13,24 @@
                 <p class="text-[#a0b3c2] text-xs mt-1.5">Sign in to your account</p>
             </div>
 
-            {{-- Tab Switcher --}}
+            
             <div class="mb-6 p-1 bg-slate-800/60 rounded-2xl flex items-center">
                 <button type="button" class="flex-1 py-2 px-4 text-sm font-medium transition-all duration-300 bg-white/10 text-white rounded-xl">
                     Sign In
                 </button>
-                <a href="{{ route('register') }}" class="flex-1 py-2 px-4 text-center text-sm font-medium transition-all duration-300 text-slate-400 hover:text-white">
+                <a href="<?php echo e(route('register')); ?>" class="flex-1 py-2 px-4 text-center text-sm font-medium transition-all duration-300 text-slate-400 hover:text-white">
                     Sign Up
                 </a>
             </div>
 
-            {{-- Password reset success flash --}}
-            @if(session('password_reset_success'))
+            
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(session('password_reset_success')): ?>
             <div class="mb-5 flex items-center gap-2 bg-[#1abc9c]/10 border border-[#1abc9c]/30 text-[#1abc9c] text-sm px-4 py-3 rounded-lg">
                 <i class="ph-fill ph-check-circle shrink-0"></i>
-                {{ session('password_reset_success') }}
+                <?php echo e(session('password_reset_success')); ?>
+
             </div>
-            @endif
+            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
             <form wire:submit="login" class="space-y-4">
                 <div>
@@ -42,13 +43,20 @@
                                class="block w-full pl-11 pr-4 py-2.5 bg-[#1c3448] border border-[#2a4a60] rounded-lg text-white placeholder-[#a0b3c2]/40 focus:outline-none focus:border-[#1abc9c] transition-colors sm:text-sm"
                                placeholder="admin@monitor.local">
                     </div>
-                    @error('email') <span class="text-red-400 text-xs mt-1.5 block">{{ $message }}</span> @enderror
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <span class="text-red-400 text-xs mt-1.5 block"><?php echo e($message); ?></span> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                 </div>
 
                 <div>
                     <div class="flex items-center justify-between mb-1.5">
                         <label for="password" class="block text-sm font-medium text-[#a0b3c2]">Password</label>
-                        <a href="{{ route('password.request') }}"
+                        <a href="<?php echo e(route('password.request')); ?>"
                            class="text-xs text-[#1abc9c] hover:text-[#16a085] transition-colors">
                             Forgot password?
                         </a>
@@ -61,7 +69,14 @@
                                class="block w-full pl-11 pr-4 py-2.5 bg-[#1c3448] border border-[#2a4a60] rounded-lg text-white placeholder-[#a0b3c2]/40 focus:outline-none focus:border-[#1abc9c] transition-colors sm:text-sm"
                                placeholder="••••••••">
                     </div>
-                    @error('password') <span class="text-red-400 text-xs mt-1.5 block">{{ $message }}</span> @enderror
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <span class="text-red-400 text-xs mt-1.5 block"><?php echo e($message); ?></span> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                 </div>
 
                 <div class="pt-2">
@@ -82,3 +97,4 @@
         
     </div>
 </div>
+<?php /**PATH D:\laravel project\Network-Monitoring\resources\views/livewire/login.blade.php ENDPATH**/ ?>

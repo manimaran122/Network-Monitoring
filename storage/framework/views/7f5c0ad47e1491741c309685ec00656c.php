@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="<?php echo e(str_replace('_', '-', app()->getLocale())); ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -46,19 +46,20 @@
             background-size: 100% 100%, 120px 120px;
         }
     </style>
-    @livewireStyles
+    <?php echo \Livewire\Mechanisms\FrontendAssets\FrontendAssets::styles(); ?>
+
 </head>
 <body class="bg-[#071421] text-slate-200 font-sans antialiased h-screen overflow-hidden m-0 p-0 flex flex-col" x-data="{ sidebarOpen: false }">
 
-    @auth
-        @include('components.partials.navbar')
+    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(auth()->guard()->check()): ?>
+        <?php echo $__env->make('components.partials.navbar', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
 
-        {{-- ── Password expiry warning banner (last 10 days) ──────────────────── --}}
-        @php
+        
+        <?php
             $__pwDays = auth()->user()->passwordDaysRemaining();
             $__showPwWarning = auth()->user()->shouldShowPasswordWarning();
-        @endphp
-        @if($__showPwWarning)
+        ?>
+        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($__showPwWarning): ?>
         <div
             x-data="{ show: true }"
             x-show="show"
@@ -73,13 +74,13 @@
                     <span>
                         <strong class="font-bold">Password Expiry Notice:</strong>
                         Your password will expire in
-                        <strong class="font-bold text-amber-200">{{ $__pwDays }} {{ $__pwDays === 1 ? 'day' : 'days' }}</strong>.
+                        <strong class="font-bold text-amber-200"><?php echo e($__pwDays); ?> <?php echo e($__pwDays === 1 ? 'day' : 'days'); ?></strong>.
                         Please change it to avoid being locked out.
                     </span>
                 </div>
                 <div class="flex items-center gap-3 shrink-0">
                     <a
-                        href="{{ route('password.change') }}"
+                        href="<?php echo e(route('password.change')); ?>"
                         class="text-xs font-bold bg-amber-500 hover:bg-amber-400 text-slate-900 px-3 py-1 rounded-lg transition-colors"
                     >
                         Change Now
@@ -90,10 +91,10 @@
                 </div>
             </div>
         </div>
-        @endif
+        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
-        {{-- ── Password changed success flash ─────────────────────────────────── --}}
-        @if(session('password_changed'))
+        
+        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(session('password_changed')): ?>
         <div
             x-data="{ show: true }"
             x-init="setTimeout(() => show = false, 5000)"
@@ -105,22 +106,62 @@
         >
             <div class="max-w-7xl mx-auto px-6 py-2 flex items-center gap-2 text-emerald-300 text-sm">
                 <i class="ph-fill ph-check-circle text-emerald-400"></i>
-                {{ session('password_changed') }}
+                <?php echo e(session('password_changed')); ?>
+
             </div>
         </div>
-        @endif
-    @endauth
+        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
     <main class="flex-1 relative w-full h-full">
-        {{ $slot }}
+        <?php echo e($slot); ?>
+
     </main>
 
-    @auth
-        <livewire:user-profile />
-        <livewire:add-monitor />
-    @endauth
+    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(auth()->guard()->check()): ?>
+        <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('user-profile', []);
 
-    {{-- Alpine Plugins — loaded synchronously so they're available on alpine:init --}}
+$key = null;
+
+$key ??= \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::generateKey('lw-2084747657-0', null);
+
+$__html = app('livewire')->mount($__name, $__params, $key);
+
+echo $__html;
+
+unset($__html);
+unset($__name);
+unset($__params);
+unset($__split);
+if (isset($__slots)) unset($__slots);
+?>
+        <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('add-monitor', []);
+
+$key = null;
+
+$key ??= \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::generateKey('lw-2084747657-1', null);
+
+$__html = app('livewire')->mount($__name, $__params, $key);
+
+echo $__html;
+
+unset($__html);
+unset($__name);
+unset($__params);
+unset($__split);
+if (isset($__slots)) unset($__slots);
+?>
+    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+
+    
     <script src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@alpinejs/focus@3.x.x/dist/cdn.min.js"></script>
     <script>
@@ -131,7 +172,9 @@
         });
     </script>
 
-    @livewireScripts
-    @stack('scripts')
+    <?php echo \Livewire\Mechanisms\FrontendAssets\FrontendAssets::scripts(); ?>
+
+    <?php echo $__env->yieldPushContent('scripts'); ?>
 </body>
 </html>
+<?php /**PATH D:\laravel project\Network-Monitoring\resources\views/components/layouts/app.blade.php ENDPATH**/ ?>

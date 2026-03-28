@@ -8,6 +8,7 @@ use App\Livewire\Reports;
 use App\Livewire\Config;
 
 Route::get('/login', App\Livewire\Login::class)->name('login');
+Route::get('/register', App\Livewire\Register::class)->name('register');
 Route::get('/forgot-password', App\Livewire\ForgotPassword::class)->name('password.request');
 
 
