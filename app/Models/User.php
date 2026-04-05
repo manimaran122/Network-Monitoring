@@ -43,6 +43,7 @@ class User extends Authenticatable
         'last_login_at',
         'must_change_password',
         'password_changed_at',
+        'google_id',
     ];
 
     /**

@@ -274,7 +274,7 @@
          @close-modal.window="open = false"
          class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60] flex items-center justify-center p-4"
          style="display: none;">
-        <div class="bg-slate-800 border border-slate-700 w-full max-w-md rounded-2xl shadow-2xl" @click.outside="open = false">
+        <div class="bg-slate-800 border border-slate-700 w-full max-w-md rounded-2xl shadow-2xl">
             <div class="p-6 border-b border-slate-700 flex justify-between items-center">
                 <div class="flex items-center gap-3">
                     <div class="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">

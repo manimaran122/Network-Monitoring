@@ -111,7 +111,7 @@
         @endif
     @endauth
 
-    <main class="flex-1 relative w-full h-full">
+    <main class="flex-1 relative w-full overflow-y-auto p-6">
         {{ $slot }}
     </main>
 

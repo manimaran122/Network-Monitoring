@@ -41,6 +41,10 @@ class Settings extends Component
 
     public function mount(): void
     {
+        if (Auth::user()->role !== 'admin') {
+            abort(403, 'Unauthorized access to settings.');
+        }
+
         $reg = DB::table('settings')->where('key', 'registration_enabled')->first();
         $this->registrationEnabled = $reg ? (bool) $reg->value : true;
     }

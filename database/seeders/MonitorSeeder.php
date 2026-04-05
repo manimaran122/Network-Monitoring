@@ -12,7 +12,7 @@ class MonitorSeeder extends Seeder
     {
         $statuses = ['online', 'online', 'online', 'offline', 'warning', 'maintenance'];
         
-        for ($i = 0; $i < 50; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             $status = $statuses[array_rand($statuses)];
             
             Monitor::create([

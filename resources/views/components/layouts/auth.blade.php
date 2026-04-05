@@ -45,12 +45,7 @@
 <body class="bg-auth text-slate-200 font-sans antialiased min-h-screen flex flex-col items-center justify-center p-4">
 
     {{-- App logo / brand at the top --}}
-    <div class="mb-8 flex flex-col items-center gap-2 animate-fade-up">
-        <div class="flex items-center justify-center w-14 h-14 rounded-2xl bg-emerald-600/20 border border-emerald-500/30 shadow-lg shadow-emerald-900/30">
-            <i class="ph-fill ph-monitor text-3xl text-emerald-400"></i>
-        </div>
-        <span class="text-lg font-bold text-white tracking-wide">Monitoring Tool</span>
-    </div>
+    {{-- App logo / brand removed per user request --}}
 
     {{-- Page slot (the Livewire component) --}}
     <div class="w-full max-w-md animate-fade-up" style="animation-delay: 0.08s">

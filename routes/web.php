@@ -11,6 +11,11 @@ Route::get('/login', App\Livewire\Login::class)->name('login');
 Route::get('/register', App\Livewire\Register::class)->name('register');
 Route::get('/forgot-password', App\Livewire\ForgotPassword::class)->name('password.request');
 
+// Google Social Login
+Route::get('auth/google', [App\Http\Controllers\Auth\GoogleController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('auth/google/callback', [App\Http\Controllers\Auth\GoogleController::class, 'handleGoogleCallback']);
+
+
 
 // Force Password Change — accessible only when authenticated (before the auth middleware group)
 Route::get('/password/change', App\Livewire\ChangePassword::class)
