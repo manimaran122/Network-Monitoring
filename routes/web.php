@@ -30,6 +30,8 @@ Route::middleware(['auth', App\Http\Middleware\ForcePasswordChange::class])->gro
     Route::get('/alerts', AlertCenter::class)->name('alerts');
     Route::get('/reports', Reports::class)->name('reports');
     Route::get('/settings', App\Livewire\Settings::class)->name('settings');
+    Route::get('/user-management', App\Livewire\Settings\UserManagement::class)->name('user-management');
+    Route::get('/roles-management', App\Livewire\Settings\RolesManagement::class)->name('roles-management');
 });
 
 Route::post('/logout', function () {

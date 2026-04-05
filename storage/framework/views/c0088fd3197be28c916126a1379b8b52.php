@@ -7,12 +7,19 @@
         </a>
 
         <nav class="hidden md:flex items-center gap-1">
+            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('view_dashboard')): ?>
             <a href="<?php echo e(route('dashboard')); ?>" wire:navigate class="px-3 py-2 text-sm font-medium rounded-lg transition-colors nav-btn <?php echo e(request()->routeIs('dashboard') ? 'text-primary-500 bg-slate-800/50 border border-slate-700/50' : 'text-slate-400 hover:text-white hover:bg-slate-800'); ?>">
                 <i class="ph ph-squares-four mr-1"></i>Dashboard
             </a>
+            <?php endif; ?>
+            
+            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('view_monitors')): ?>
             <a href="<?php echo e(route('monitors')); ?>" wire:navigate class="px-3 py-2 text-sm font-medium rounded-lg transition-colors nav-btn <?php echo e(request()->routeIs('monitors') ? 'text-primary-500 bg-slate-800/50 border border-slate-700/50' : 'text-slate-400 hover:text-white hover:bg-slate-800'); ?>">
                 <i class="ph ph-list-dashes mr-1"></i>Monitors
             </a>
+            <?php endif; ?>
+
+            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage_alerts')): ?>
             <a href="<?php echo e(route('alerts')); ?>" wire:navigate class="relative px-3 py-2 text-sm font-medium rounded-lg transition-colors nav-btn <?php echo e(request()->routeIs('alerts') ? 'text-red-400 bg-slate-800/50 border border-slate-700/50' : 'text-slate-400 hover:text-white hover:bg-slate-800'); ?>">
                 <i class="ph ph-warning-octagon mr-1"></i>Alerts
                 <?php try { $openAlerts = \App\Models\Alert::open()->count(); } catch(\Throwable $e) { $openAlerts = 0; } ?>
@@ -23,14 +30,25 @@
                 </span>
                 <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
             </a>
+            <?php endif; ?>
+
+            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('view_reports')): ?>
             <a href="<?php echo e(route('reports')); ?>" wire:navigate class="px-3 py-2 text-sm font-medium rounded-lg transition-colors nav-btn <?php echo e(request()->routeIs('reports') ? 'text-primary-500 bg-slate-800/50 border border-slate-700/50' : 'text-slate-400 hover:text-white hover:bg-slate-800'); ?>">
                 <i class="ph ph-chart-bar mr-1"></i>Reports
             </a>
-            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(auth()->user()->role === 'admin'): ?>
-            <a href="<?php echo e(route('settings')); ?>" wire:navigate class="px-3 py-2 text-sm font-medium rounded-lg transition-colors nav-btn <?php echo e(request()->routeIs('settings') ? 'text-primary-500 bg-slate-800/50 border border-slate-700/50' : 'text-slate-400 hover:text-white hover:bg-slate-800'); ?>">
+            <?php endif; ?>
+
+            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['view_settings', 'manage_settings'])): ?>
+            <a href="<?php echo e(route('settings')); ?>" wire:navigate class="px-3 py-2 text-sm font-medium rounded-lg transition-colors nav-btn <?php echo e((request()->routeIs('settings')) ? 'text-primary-500 bg-slate-800/50 border border-slate-700/50' : 'text-slate-400 hover:text-white hover:bg-slate-800'); ?>">
                 <i class="ph ph-gear mr-1"></i>Settings
             </a>
-            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+            <?php endif; ?>
+
+            <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any(['view_users', 'manage_users'])): ?>
+            <a href="<?php echo e(route('user-management')); ?>" wire:navigate class="px-3 py-2 text-sm font-medium rounded-lg transition-colors nav-btn <?php echo e((request()->routeIs('user-management')) ? 'text-primary-500 bg-slate-800/50 border border-slate-700/50' : 'text-slate-400 hover:text-white hover:bg-slate-800'); ?>">
+                <i class="ph ph-users mr-1"></i>User Management
+            </a>
+            <?php endif; ?>
         </nav>
     </div>
 

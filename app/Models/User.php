@@ -9,19 +9,30 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
-
 use Spatie\Permission\Traits\HasRoles;
+
+
 
 class User extends Authenticatable
 {
     use HasApiTokens;
     use HasRoles;
 
+
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
     use HasProfilePhoto;
     use Notifiable;
     use TwoFactorAuthenticatable;
+
+    protected static function booted()
+    {
+        static::saved(function ($user) {
+            if ($user->wasChanged('role') || $user->wasRecentlyCreated) {
+                if ($user->role) $user->syncRoles([$user->role]);
+            }
+        });
+    }
 
     /**
      * Password policy constants.

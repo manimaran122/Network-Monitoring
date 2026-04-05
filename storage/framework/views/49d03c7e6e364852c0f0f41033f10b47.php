@@ -27,9 +27,28 @@
     </div>
 
     <div class="border-b border-slate-700 flex gap-6 text-sm">
-        <button wire:click="switchTab('users')" class="pb-3 border-b-2 transition-colors <?php echo e($activeTab === 'users' ? 'border-primary-500 text-white font-bold' : 'border-transparent text-slate-400 hover:text-white'); ?>">User Management</button>
-        <button wire:click="switchTab('logs')" class="pb-3 border-b-2 transition-colors <?php echo e($activeTab === 'logs' ? 'border-primary-500 text-white font-bold' : 'border-transparent text-slate-400 hover:text-white'); ?>">Activity Logs</button>
+        <button wire:click="switchTab('users')" class="pb-4 px-2 text-xs font-black uppercase tracking-widest transition-all relative <?php echo e($activeTab === 'users' ? 'text-emerald-500' : 'text-slate-500 hover:text-slate-300'); ?>">
+            User Management
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($activeTab === 'users'): ?> <div class="absolute bottom-0 left-0 right-0 h-1 bg-emerald-500 rounded-full shadow-glow shadow-emerald-500/50"></div> <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+        </button>
+
+        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('view_logs')): ?>
+        <button wire:click="switchTab('logs')" 
+                class="pb-4 px-2 text-xs font-black uppercase tracking-widest transition-all relative <?php echo e($activeTab === 'logs' ? 'text-emerald-500' : 'text-slate-500 hover:text-slate-300'); ?>">
+            Activity Logs
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($activeTab === 'logs'): ?> <div class="absolute bottom-0 left-0 right-0 h-1 bg-emerald-500 rounded-full shadow-glow shadow-emerald-500/50"></div> <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+        </button>
+        <?php endif; ?>
+
+        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('manage_settings')): ?>
+        <button wire:click="switchTab('roles')" 
+                class="pb-4 px-2 text-xs font-black uppercase tracking-widest transition-all relative <?php echo e($activeTab === 'roles' ? 'text-emerald-500' : 'text-slate-500 hover:text-slate-300'); ?>">
+            Roles & Permissions
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($activeTab === 'roles'): ?> <div class="absolute bottom-0 left-0 right-0 h-1 bg-emerald-500 rounded-full shadow-glow shadow-emerald-500/50"></div> <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+        </button>
+        <?php endif; ?>
     </div>
+
 
     
     
@@ -277,6 +296,162 @@
     
     
     
+    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($activeTab === 'roles'): ?>
+    <div class="space-y-6 fade-in">
+        <div class="flex items-center justify-between bg-slate-800/50 border border-slate-700/50 p-6 rounded-2xl">
+             <div>
+                 <h3 class="text-xl font-bold text-white">Advanced Role Management</h3>
+                 <p class="text-sm text-slate-400">Configure granular system scopes and custom identities.</p>
+             </div>
+             <a href="<?php echo e(route('roles-management')); ?>" 
+                class="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-emerald-600/20 active:scale-95 flex items-center gap-2">
+                 <i class="ph-bold ph-arrow-square-out"></i>
+                 Open Dedicated Roles UI
+             </a>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <div class="lg:col-span-1">
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden shadow-2xl">
+                    <div class="p-5 border-b border-slate-700 bg-slate-900/30 flex items-center justify-between">
+                        <h3 class="font-bold text-white flex items-center gap-2">
+                            <i class="ph-fill ph-user-gear text-blue-400"></i> Roles
+                        </h3>
+                        <button wire:click="openRoleModal" 
+                                class="p-2 bg-blue-600/10 text-blue-400 hover:bg-blue-600 hover:text-white rounded-lg transition-all active:scale-95">
+                            <i class="ph-bold ph-plus text-xs"></i>
+                        </button>
+                    </div>
+                    <div class="divide-y divide-slate-700/50 max-h-[600px] overflow-y-auto">
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $allRoles; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $r): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <div wire:click="$set('selectedRoleId', <?php echo e($r->id); ?>)" 
+                             class="p-5 hover:bg-slate-700/40 transition-all cursor-pointer group relative <?php echo e($selectedRoleId === $r->id ? 'bg-blue-600/10 border-l-4 border-blue-500' : ''); ?>">
+                            <div class="flex items-center justify-between relative z-10">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-2.5 h-2.5 rounded-full ring-4 ring-offset-4 ring-offset-slate-800 <?php echo e($r->name === 'admin' ? 'bg-emerald-500 ring-emerald-500/10' : ($r->name === 'viewer' ? 'bg-blue-500 ring-blue-500/10' : 'bg-slate-500 ring-slate-500/10')); ?>"></div>
+                                    <div>
+                                        <span class="block font-black text-white uppercase tracking-widest text-xs"><?php echo e($r->name); ?></span>
+                                        <span class="text-[10px] text-slate-500 font-medium uppercase tracking-tight"><?php echo e($r->permissions->count()); ?> active permissions</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <button wire:click.stop="openRoleModal(<?php echo e($r->id); ?>)" class="p-1.5 text-slate-400 hover:text-blue-400">
+                                        <i class="ph-bold ph-pencil-simple"></i>
+                                    </button>
+                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(!in_array($r->name, ['admin', 'viewer'])): ?>
+                                    <button wire:click.stop="deleteRole(<?php echo e($r->id); ?>)" wire:confirm="Are you sure? This will delete the role '<?php echo e($r->name); ?>'." class="p-1.5 text-slate-500 hover:text-red-400">
+                                        <i class="ph-bold ph-trash"></i>
+                                    </button>
+                                    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="lg:col-span-2">
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($selectedRole): ?>
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden shadow-2xl h-full flex flex-col min-h-[400px]">
+                    <div class="p-5 border-b border-slate-700 bg-slate-900/30 flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="h-8 w-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+                                <i class="ph ph-shield-check text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-white text-sm uppercase tracking-widest"><?php echo e($selectedRole->name); ?></h3>
+                                <p class="text-[10px] text-slate-400 uppercase font-medium">Define capabilities for this role</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $allPermissions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $perm): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php $hasPerm = $selectedRole->hasPermissionTo($perm->name); ?>
+                        <div wire:click="togglePermission(<?php echo e($selectedRole->id); ?>, '<?php echo e($perm->name); ?>')" 
+                             class="p-4 rounded-xl border transition-all cursor-pointer flex items-center justify-between group 
+                                    <?php echo e($hasPerm ? 'bg-emerald-500/5 border-emerald-500/30 ring-1 ring-emerald-500/10' : 'bg-slate-900/20 border-slate-700 hover:border-slate-600'); ?>">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg flex items-center justify-center <?php echo e($hasPerm ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800 text-slate-500'); ?>">
+                                    <i class="ph ph-<?php echo e($hasPerm ? 'check-circle' : 'circle'); ?> text-lg"></i>
+                                </div>
+                                <div class="text-sm font-bold <?php echo e($hasPerm ? 'text-emerald-400' : 'text-slate-300'); ?>"><?php echo e(ucwords(str_replace('_', ' ', $perm->name))); ?></div>
+                            </div>
+                            <div class="relative inline-block w-8 h-4 align-middle select-none transition duration-200 ease-in">
+                                <div class="block w-8 h-4 rounded-full <?php echo e($hasPerm ? 'bg-emerald-500' : 'bg-slate-700'); ?>"></div>
+                                <div class="dot absolute left-1 top-1 bg-white w-2 h-2 rounded-full transition-transform <?php echo e($hasPerm ? 'translate-x-4' : ''); ?>"></div>
+                            </div>
+                        </div>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                    </div>
+                </div>
+                <?php else: ?>
+                <div class="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden shadow-2xl h-full min-h-[400px] flex items-center justify-center">
+                    <div class="p-12 text-center">
+                        <div class="w-20 h-20 rounded-3xl bg-slate-900/50 flex items-center justify-center mb-6 shadow-inner ring-1 ring-slate-700 mx-auto">
+                            <i class="ph ph-user-focus text-4xl text-slate-600/50"></i>
+                        </div>
+                        <h4 class="text-white font-bold text-lg mb-2">No Role Selected</h4>
+                        <p class="text-slate-400 text-sm max-w-xs mx-auto">Select a role from the sidebar to manage its system capabilities.</p>
+                    </div>
+                </div>
+                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+            </div>
+        </div>
+    </div>
+
+    
+    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($showRoleModal): ?>
+    <div class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[70] flex items-center justify-center p-4">
+        <div class="bg-slate-800 border border-slate-700 w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden">
+            <div class="p-6 border-b border-slate-700 bg-slate-900/30 flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center">
+                        <i class="ph-bold ph-plus text-blue-400"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white"><?php echo e($editingRoleId ? 'Rename Role' : 'Create New Role'); ?></h3>
+                </div>
+                <button type="button" wire:click="closeRoleModal" class="text-slate-400 hover:text-white transition-colors">
+                    <i class="ph-bold ph-x text-xl"></i>
+                </button>
+            </div>
+            <form wire:submit="saveRole">
+                <div class="p-6 space-y-4">
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5 ml-1">Role Internal Name</label>
+                        <input wire:model="roleName" type="text" placeholder="e.g. moderator"
+                               class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white focus:border-blue-500 outline-none transition-all">
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__errorArgs = ['roleName'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <span class="text-red-400 text-[10px] mt-1 block ml-1"><?php echo e($message); ?></span> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                    </div>
+                </div>
+                <div class="p-6 bg-slate-900/20 border-t border-slate-700 flex justify-end gap-3">
+                    <button type="button" wire:click="closeRoleModal"
+                            class="px-5 py-2 text-sm font-bold text-slate-300 hover:text-white bg-slate-700/50 rounded-xl transition-all">Cancel</button>
+                    <button type="submit"
+                            class="px-5 py-2 text-sm font-bold bg-blue-600 hover:bg-blue-500 text-white rounded-xl transition-all active:scale-95">
+                        <?php echo e($editingRoleId ? 'Update' : 'Create'); ?> Role
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+
+
+    
+    
+    
     <div x-data="{ open: false }"
          x-show="open"
          @open-create-user-modal.window="open = true"
@@ -327,8 +502,9 @@ unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendB
                         <label class="block text-xs font-medium text-slate-400 mb-1.5">Role</label>
                         <select wire:model="role"
                                 class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-sm text-white focus:border-blue-500 outline-none">
-                            <option value="viewer">Viewer</option>
-                            <option value="admin">Admin</option>
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $allRoles; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $r): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <option value="<?php echo e($r->name); ?>"><?php echo e(ucwords($r->name)); ?></option>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                         </select>
                         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__errorArgs = ['role'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -420,8 +596,9 @@ unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendB
                         <label class="block text-xs font-medium text-slate-400 mb-1.5">Role</label>
                         <select wire:model="editRole"
                                 class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-sm text-white focus:border-amber-500 outline-none">
-                            <option value="viewer">Viewer</option>
-                            <option value="admin">Admin</option>
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $allRoles; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $r): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <option value="<?php echo e($r->name); ?>"><?php echo e(ucwords($r->name)); ?></option>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                         </select>
                         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__errorArgs = ['editRole'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');

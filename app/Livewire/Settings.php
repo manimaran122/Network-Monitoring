@@ -5,6 +5,8 @@ namespace App\Livewire;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\User;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +16,7 @@ class Settings extends Component
 {
     use WithPagination;
 
-    public string $activeTab = 'users'; // 'users' | 'logs'
+    public string $activeTab = 'users'; // 'users' | 'logs' | 'roles'
 
     // ── Create User form ─────────────────────────────────────────────────────
     public string $name     = '';
@@ -37,6 +39,14 @@ class Settings extends Component
     public string $logSearch    = '';
     public string $filterAction = 'all';
 
+    // ── Role CRUD ─────────────────────────────────────────────────────────────
+    public string $roleName = '';
+    public ?int $editingRoleId = null;
+    public bool $showRoleModal = false;
+    public ?int $selectedRoleId = null;
+
+
+
     protected $queryString = ['activeTab'];
 
     public function mount(): void
@@ -47,10 +57,29 @@ class Settings extends Component
 
         $reg = DB::table('settings')->where('key', 'registration_enabled')->first();
         $this->registrationEnabled = $reg ? (bool) $reg->value : true;
+
+        // Ensure roles exist
+        Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+        Role::firstOrCreate(['name' => 'viewer', 'guard_name' => 'web']);
+
+        // Ensure some base permissions exist for demo
+        $perms = ['view_monitors', 'manage_monitors', 'manage_users', 'view_logs', 'manage_settings'];
+        foreach ($perms as $p) {
+            Permission::firstOrCreate(['name' => $p, 'guard_name' => 'web']);
+        }
     }
 
     public function switchTab(string $tab): void
     {
+        if ($tab === 'logs' && !auth()->user()->can('view_logs')) {
+            $this->dispatch('user-management-toast', message: "Unauthorized tab.", type: 'error');
+            return;
+        }
+        if ($tab === 'roles' && !auth()->user()->can('manage_settings')) {
+            $this->dispatch('user-management-toast', message: "Unauthorized tab.", type: 'error');
+            return;
+        }
+
         $this->activeTab = $tab;
         $this->resetPage();
     }
@@ -152,10 +181,74 @@ class Settings extends Component
         $this->writeLog('CLEAR_LOGS', 'Activity logs cleared by admin');
     }
 
+    // ── Role Management ──────────────────────────────────────────────────────────
+    public function openRoleModal(?int $id = null): void
+    {
+        $this->reset(['roleName', 'editingRoleId']);
+        $this->resetValidation();
+        
+        if ($id) {
+            $role = Role::findOrFail($id);
+            $this->editingRoleId = $role->id;
+            $this->roleName      = $role->name;
+        }
+
+        $this->showRoleModal = true;
+    }
+
+    public function closeRoleModal(): void
+    {
+        $this->showRoleModal = false;
+        $this->editingRoleId = null;
+        $this->resetValidation();
+    }
+
+    public function saveRole(): void
+    {
+        $this->validate(['roleName' => 'required|string|min:3|unique:roles,name,' . ($this->editingRoleId ?? 'NULL')]);
+
+        if ($this->editingRoleId) {
+            $role = Role::findOrFail($this->editingRoleId);
+            $oldName = $role->name;
+            $role->update(['name' => strtolower($this->roleName)]);
+            $this->writeLog('UPDATE_ROLE', "Renamed role from '{$oldName}' to '{$role->name}'");
+            session()->flash('message', 'Role updated successfully.');
+        } else {
+            $role = Role::create(['name' => strtolower($this->roleName), 'guard_name' => 'web']);
+            $this->writeLog('CREATE_ROLE', "Created new role '{$role->name}'");
+            session()->flash('message', "Role '{$role->name}' created successfully.");
+        }
+
+        $this->closeRoleModal();
+    }
+
+    public function deleteRole(int $id): void
+    {
+        $role = Role::findOrFail($id);
+        if (in_array($role->name, ['admin', 'viewer'])) {
+            session()->flash('error', 'System roles cannot be deleted.');
+            return;
+        }
+
+        $role->delete();
+        $this->writeLog('DELETE_ROLE', "Deleted role '{$role->name}'");
+        session()->flash('message', 'Role deleted successfully.');
+    }
+
+    public function togglePermission(int $roleId, string $permissionName): void
+    {
+        $role = Role::findOrFail($roleId);
+        if ($role->hasPermissionTo($permissionName)) {
+            $role->revokePermissionTo($permissionName);
+        } else {
+            $role->givePermissionTo($permissionName);
+        }
+    }
     private function writeLog(string $action, string $details = ''): void
     {
         DB::table('activity_logs')->insert([
             'user_id'    => Auth::id(),
+
             'action'     => $action,
             'details'    => $details,
             'ip_address' => request()->ip(),
@@ -196,7 +289,11 @@ class Settings extends Component
             'today'  => DB::table('activity_logs')->whereDate('created_at', today())->count(),
             'logins' => DB::table('activity_logs')->where('action', 'login')->whereDate('created_at', today())->count(),
         ];
+        $allRoles = Role::with('permissions')->get();
+        $allPermissions = Permission::all();
+        $selectedRole = $this->selectedRoleId ? Role::with('permissions')->find($this->selectedRoleId) : null;
 
-        return view('livewire.settings', compact('users', 'logs', 'logStats'));
+        return view('livewire.settings', compact('users', 'logs', 'logStats', 'allRoles', 'allPermissions', 'selectedRole'));
+
     }
 }

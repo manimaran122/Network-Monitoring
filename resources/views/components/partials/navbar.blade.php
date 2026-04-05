@@ -7,12 +7,19 @@
         </a>
 
         <nav class="hidden md:flex items-center gap-1">
+            @can('view_dashboard')
             <a href="{{ route('dashboard') }}" wire:navigate class="px-3 py-2 text-sm font-medium rounded-lg transition-colors nav-btn {{ request()->routeIs('dashboard') ? 'text-primary-500 bg-slate-800/50 border border-slate-700/50' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
                 <i class="ph ph-squares-four mr-1"></i>Dashboard
             </a>
+            @endcan
+            
+            @can('view_monitors')
             <a href="{{ route('monitors') }}" wire:navigate class="px-3 py-2 text-sm font-medium rounded-lg transition-colors nav-btn {{ request()->routeIs('monitors') ? 'text-primary-500 bg-slate-800/50 border border-slate-700/50' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
                 <i class="ph ph-list-dashes mr-1"></i>Monitors
             </a>
+            @endcan
+
+            @can('manage_alerts')
             <a href="{{ route('alerts') }}" wire:navigate class="relative px-3 py-2 text-sm font-medium rounded-lg transition-colors nav-btn {{ request()->routeIs('alerts') ? 'text-red-400 bg-slate-800/50 border border-slate-700/50' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
                 <i class="ph ph-warning-octagon mr-1"></i>Alerts
                 @php try { $openAlerts = \App\Models\Alert::open()->count(); } catch(\Throwable $e) { $openAlerts = 0; } @endphp
@@ -22,14 +29,25 @@
                 </span>
                 @endif
             </a>
+            @endcan
+
+            @can('view_reports')
             <a href="{{ route('reports') }}" wire:navigate class="px-3 py-2 text-sm font-medium rounded-lg transition-colors nav-btn {{ request()->routeIs('reports') ? 'text-primary-500 bg-slate-800/50 border border-slate-700/50' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
                 <i class="ph ph-chart-bar mr-1"></i>Reports
             </a>
-            @if(auth()->user()->role === 'admin')
-            <a href="{{ route('settings') }}" wire:navigate class="px-3 py-2 text-sm font-medium rounded-lg transition-colors nav-btn {{ request()->routeIs('settings') ? 'text-primary-500 bg-slate-800/50 border border-slate-700/50' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
+            @endcan
+
+            @canany(['view_settings', 'manage_settings'])
+            <a href="{{ route('settings') }}" wire:navigate class="px-3 py-2 text-sm font-medium rounded-lg transition-colors nav-btn {{ (request()->routeIs('settings')) ? 'text-primary-500 bg-slate-800/50 border border-slate-700/50' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
                 <i class="ph ph-gear mr-1"></i>Settings
             </a>
-            @endif
+            @endcanany
+
+            @canany(['view_users', 'manage_users'])
+            <a href="{{ route('user-management') }}" wire:navigate class="px-3 py-2 text-sm font-medium rounded-lg transition-colors nav-btn {{ (request()->routeIs('user-management')) ? 'text-primary-500 bg-slate-800/50 border border-slate-700/50' : 'text-slate-400 hover:text-white hover:bg-slate-800' }}">
+                <i class="ph ph-users mr-1"></i>User Management
+            </a>
+            @endcanany
         </nav>
     </div>
 
